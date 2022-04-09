@@ -1,6 +1,9 @@
 package com.example.simplify_debts;
 
 
+import android.content.Context;
+import android.content.Intent;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -10,17 +13,17 @@ public class Main {
     private static final long OFFSET = 1000000000L;
     private static Set<Long> visitedEdges; // Set won't have the same objects.
 
-    public static void main(String[] args) {
-        createGraph();
+//    public static void main(String[] args) {
+//        createGraph();
+//
+//    }
 
-    }
+    public static Intent createGraph(String[] person, int debts, ArrayList<Integer>giver, ArrayList<Integer>taker, ArrayList<Integer> money) {
 
-    private static void createGraph() {
-        String[] person = { "Alice", "Bob", "Charlie", "David", "Ema", "Fred", "Gabe" };
         int n = person.length;
 
         Dinics solver = new Dinics(n, person);
-        solver = addAllTransactions(solver);
+        solver = addAllTransactions(debts,solver,giver,taker,money);
 
         System.out.println();
         System.out.println("Simplifying Debts...");
@@ -66,25 +69,32 @@ public class Main {
             // add an edge (u,v) with weight as max-flow to the residual graph.
             solver.addEdge(source, sink, maxFlow);
         }
-        solver.printEdges();
+        Intent intent;
+        intent = solver.printEdges();
         System.out.println();
+
+        return intent;
     }
 
-    private static Dinics addAllTransactions(Dinics solver) {
+    private static Dinics addAllTransactions(int debts,Dinics solver,ArrayList<Integer>giver,ArrayList<Integer>taker,ArrayList<Integer>money) {
+
+        for(int i =0;i<debts;i++){
+            solver.addEdge(giver.get(i),taker.get(i),money.get(i));
+        }
         // Transactions made by Bob
-        solver.addEdge(1, 2, 40);
+        //solver.addEdge(1, 2, 40);
         // Transactions made by Charlie
-        solver.addEdge(2, 3, 20);
+        //solver.addEdge(2, 3, 20);
         // Transactions made by David
-        solver.addEdge(3, 4, 50);
+        //solver.addEdge(3, 4, 50);
         // Transactions made by Fred
-        solver.addEdge(5, 1, 10);
-        solver.addEdge(5, 2, 30);
-        solver.addEdge(5, 3, 10);
-        solver.addEdge(5, 4, 10);
+        //solver.addEdge(5, 1, 10);
+        //solver.addEdge(5, 2, 30);
+        //solver.addEdge(5, 3, 10);
+        //solver.addEdge(5, 4, 10);
         // Transactions made by Gabe
-        solver.addEdge(6, 1, 30);
-        solver.addEdge(6, 3, 10);
+        //solver.addEdge(6, 1, 30);
+        //solver.addEdge(6, 3, 10);
         return solver;
     }
 

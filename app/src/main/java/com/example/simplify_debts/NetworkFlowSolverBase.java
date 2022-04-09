@@ -1,9 +1,15 @@
 package com.example.simplify_debts;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class NetworkFlowSolverBase {
+public abstract class NetworkFlowSolverBase  {
 
     // To avoid overflow
     protected static final long INF = Long.MAX_VALUE;
@@ -179,10 +185,21 @@ public abstract class NetworkFlowSolverBase {
         solved = false;
     }
     //print all edges.
-    public void printEdges() {
+    public Intent printEdges() {
+        Intent intent = new Intent();
+        ArrayList<String> giver = new ArrayList<>();
+        ArrayList<String> taker = new ArrayList<>();
+        ArrayList<String> money = new ArrayList<>();
         for(Edge edge : edges) {
             System.out.println(String.format("%s ----%s----> %s", vertexLabels[edge.from], edge.capacity, vertexLabels[edge.to]));
+            giver.add(vertexLabels[edge.from]);
+            money.add(Long.toString(edge.capacity));
+            taker.add(vertexLabels[edge.to]);
         }
+        intent.putStringArrayListExtra("giver",giver);
+        intent.putStringArrayListExtra("money",money);
+        intent.putStringArrayListExtra("taker",taker);
+       return intent;
     }
     //Wrapper method that ensures we only  call solve() once
     private void execute() {

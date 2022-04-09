@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Simplify_debts">
         <activity
+            android:name=".ResultActivity"
+            android:exported="false" />
+        <activity
             android:name=".CalculateActivity"
             android:exported="false" />
         <activity
