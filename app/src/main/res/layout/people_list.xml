@@ -6,7 +6,6 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:id="@+id/linearLayout2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -16,19 +15,20 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            android:text="NAME"
+            android:textSize="20sp" />
+
+        <TextView
             android:id="@+id/uid"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="10dp"
             android:text="UID" />
-
-        <EditText
-            android:id="@+id/name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:minHeight="48dp"
-            android:text="Name" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

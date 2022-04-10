@@ -19,7 +19,7 @@
         app:layout_constraintTop_toBottomOf="@+id/addPerson" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/nextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Next"
@@ -33,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="People List(Long Click To Remove)"
+        android:text="People List (Long Click To Remove)"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/peopleList"
         app:layout_constraintStart_toStartOf="parent"

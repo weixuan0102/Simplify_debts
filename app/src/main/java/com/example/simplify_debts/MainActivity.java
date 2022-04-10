@@ -1,15 +1,18 @@
 package com.example.simplify_debts;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,36 +25,34 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
+    private ImageView addPeople;
+    private Button nextButton;
+    private ArrayList<Dictionary<String, String>> people = new ArrayList<>();
+    private peopleAdapter listAdapter = new peopleAdapter(people);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setViews();
 
-        addPeople.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addPeopleToList();
-            }
-        });
+        addPeople.setOnClickListener(v -> addPeopleToList());
+        nextButton.setOnClickListener(v -> startActivity(new Intent(this, CalculateActivity.class)));
     }
-
-    private Button addPeople;
-    private RecyclerView list;
-    private ArrayList<Dictionary<String, String>> people = new ArrayList<>();
-    private peopleAdapter listAdapter = new peopleAdapter(people);
 
     private void setViews(){
         addPeople =  findViewById(R.id.addPerson);
-        list = findViewById(R.id.peopleList);
+        nextButton = findViewById(R.id.nextButton);
+        RecyclerView list = findViewById(R.id.peopleList);
         list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        list.addItemDecoration(new DividerItemDecoration(list.getContext(), DividerItemDecoration.VERTICAL));
         list.setAdapter(listAdapter);
     }
 
     private void addPeopleToList() {
         Toast.makeText(this, "button", Toast.LENGTH_SHORT).show();
         Dictionary<String, String> person = new Hashtable<>();
-        person.put("uid", (UUID.randomUUID()).toString());
+        person.put("uid", (UUID.randomUUID()).toString().replace("-", ""));
         person.put("name", "NAME");
         people.add(person);
         Log.d(TAG, "addPeopleToList: " + people.toString());
@@ -100,8 +101,8 @@ public class MainActivity extends AppCompatActivity {
         // Replace the contents of a view (invoked by the layout manager)
         @Override
         public void onBindViewHolder(ViewHolder viewHolder, final int pos) {
-            viewHolder.name.setText(Data.get(pos).get("name"));
-            viewHolder.uid.setText(Data.get(pos).get("uid"));
+            viewHolder.name.setText((pos + 1) + ". " + Data.get(pos).get("name"));
+            viewHolder.uid.setText("UID: " + Data.get(pos).get("uid"));
         }
 
     }
