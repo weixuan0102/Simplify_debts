@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private ImageView addPeople;
+    private Button addPeople;
     private RecyclerView list;
     private ArrayList<Dictionary<String, String>> people = new ArrayList<>();
     private peopleAdapter listAdapter = new peopleAdapter(people);

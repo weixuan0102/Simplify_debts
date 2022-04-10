@@ -6,20 +6,65 @@
     android:layout_height="match_parent"
     tools:context=".CalculateActivity">
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="409dp"
-        android:layout_height="171dp"
-        android:orientation="vertical"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp">
+    <Button
+        android:id="@+id/addTransactions"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:text="+"
+        android:textAlignment="textEnd"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="24sp"
+        app:iconPadding="0dp"
+        app:iconTint="@color/material_dynamic_neutral40"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/previous"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="previous" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="169dp"
+        android:layout_height="36dp"
+        android:text="Transactions:"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toStartOf="@+id/addTransactions"
+        app:layout_constraintHorizontal_bias="0.068"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/previous"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="72dp"
+        android:text="previous"
+        app:layout_constraintEnd_toStartOf="@+id/calculate"
+        app:layout_constraintTop_toBottomOf="@+id/Transactions" />
+
+    <Button
+        android:id="@+id/calculate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="36dp"
+        android:text="calculate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Transactions" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/Transactions"
+        android:layout_width="401dp"
+        android:layout_height="576dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.469"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addTransactions">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
