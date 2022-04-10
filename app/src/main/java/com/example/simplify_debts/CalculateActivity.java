@@ -2,11 +2,10 @@ package com.example.simplify_debts;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -19,15 +18,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.UUID;
 
 public class CalculateActivity extends AppCompatActivity {
 
@@ -37,38 +31,18 @@ public class CalculateActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calculate);
-//        setContentView(linearLayout);
         setView();
         getMessage();
 
-
-        addButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                addTransaction();
-            }
-        });
-
-        previousButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
-        calculateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                cal();
-            }
-        });
+        addButton.setOnClickListener(v -> addTransaction());
+        previousButton.setOnClickListener(v -> finish());
+        calculateButton.setOnClickListener(v -> cal());
     }
 
-    private Button addButton;
+    private ImageView addButton;
     private Button previousButton;
     private Button calculateButton;
-    private RecyclerView list;
-//    private ArrayList<String> transactions = new ArrayList<>();
+    //    private ArrayList<String> transactions = new ArrayList<>();
     private ArrayList<Integer> debt = new ArrayList<>();
     private ArrayList<Integer> giver = new ArrayList<>();
     private ArrayList<Integer> taker = new ArrayList<>();
@@ -83,7 +57,7 @@ public class CalculateActivity extends AppCompatActivity {
         previousButton = findViewById(R.id.previous);
         calculateButton = findViewById(R.id.calculate);
         addButton = findViewById(R.id.addTransactions);
-        list = findViewById(R.id.Transactions);
+        RecyclerView list = findViewById(R.id.Transactions);
         list.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
         list.setAdapter(transactionsAdapter);
 //        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
@@ -100,13 +74,22 @@ public class CalculateActivity extends AppCompatActivity {
     }
 
     private void addTransaction(){
-        if(!name.isEmpty()){
-            giver.add(0);
-            taker.add(0);
-            debt.add(0);
-            transactionsAdapter.notifyDataSetChanged();
-        }
+        View v = LayoutInflater.from(this).inflate(R.layout.transaction_dialog, null);
+        AlertDialog d = new AlertDialog.Builder(this)
+                .setView(v)
+                .setTitle("Add a transaction")
+                .setPositiveButton("Add", (dialogInterface, i) -> dialogInterface.dismiss())
+                .setNegativeButton("Cancel", ((dialogInterface, i) -> dialogInterface.dismiss()))
+                .create();
+        d.show();
 
+//        if(!name.isEmpty()){
+//            giver.add(0);
+//            taker.add(0);
+//            debt.add(0);
+//            transactionsAdapter.notifyDataSetChanged();
+//        }
+//
     }
 
 //    ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT | ItemTouchHelper.DOWN | ItemTouchHelper.UP) {
@@ -256,7 +239,7 @@ public class CalculateActivity extends AppCompatActivity {
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.transactions,viewGroup,false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.activity_transactions,viewGroup,false);
             return new ViewHolder(view);
         }
 

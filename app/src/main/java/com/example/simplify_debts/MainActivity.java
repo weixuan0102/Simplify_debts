@@ -27,8 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView addPeople;
     private Button nextButton;
-    private ArrayList<Dictionary<String, String>> people = new ArrayList<>();
-    private peopleAdapter listAdapter = new peopleAdapter(people);
+    private final ArrayList<Dictionary<String, String>> people = new ArrayList<>();
+    private final peopleAdapter listAdapter = new peopleAdapter(people);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +55,8 @@ public class MainActivity extends AppCompatActivity {
         person.put("uid", (UUID.randomUUID()).toString().replace("-", ""));
         person.put("name", "NAME");
         people.add(person);
-        Log.d(TAG, "addPeopleToList: " + people.toString());
-        listAdapter.notifyDataSetChanged();
+        Log.d(TAG, "addPeopleToList: " + people);
+        listAdapter.notifyItemInserted(people.size()-1);
     }
 
     class peopleAdapter extends RecyclerView.Adapter<peopleAdapter.ViewHolder> {
