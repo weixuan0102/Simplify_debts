@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,13 +52,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addPeopleToList() {
-        Toast.makeText(this, "button", Toast.LENGTH_SHORT).show();
-        Dictionary<String, String> person = new Hashtable<>();
-        person.put("uid", (UUID.randomUUID()).toString().replace("-", ""));
-        person.put("name", "NAME");
-        people.add(person);
-        Log.d(TAG, "addPeopleToList: " + people);
-        listAdapter.notifyItemInserted(people.size()-1);
+        View v = LayoutInflater.from(this).inflate(R.layout.person_dialog, null);
+        EditText et = v.findViewById(R.id.name);
+        AlertDialog d = new AlertDialog.Builder(this)
+                .setView(v)
+                .setTitle("Add a person")
+                .setPositiveButton("Add", ((dialogInterface, i) -> {
+                    String name = et.getText().toString();
+                    if (name.length() == 0) {
+                        Toast.makeText(MainActivity.this, "Name can not be empty.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    Dictionary<String, String> person = new Hashtable<>();
+                    person.put("uid", (UUID.randomUUID()).toString().replace("-", ""));
+                    person.put("name", name);
+                    people.add(person);
+                    Log.d(TAG, "addPeopleToList: " + people);
+                    listAdapter.notifyItemInserted(people.size()-1);
+                    dialogInterface.dismiss();
+                }))
+                .setNegativeButton("Cancel", ((dialogInterface, i) -> {dialogInterface.dismiss();}))
+                .create();
+        d.show();
     }
 
     class peopleAdapter extends RecyclerView.Adapter<peopleAdapter.ViewHolder> {
