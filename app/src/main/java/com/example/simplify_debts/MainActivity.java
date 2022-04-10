@@ -29,7 +29,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView addPeople;
     private Button nextButton;
-    private final ArrayList<Dictionary<String, String>> people = new ArrayList<>();
+    RecyclerView list;
+    private ArrayList<Dictionary<String, String>> people = new ArrayList<>();
     private final peopleAdapter listAdapter = new peopleAdapter(people);
 
     @Override
@@ -43,9 +44,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setViews(){
+        list = findViewById(R.id.peopleList);
         addPeople =  findViewById(R.id.addPerson);
         nextButton = findViewById(R.id.nextButton);
-        RecyclerView list = findViewById(R.id.peopleList);
         list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         list.addItemDecoration(new DividerItemDecoration(list.getContext(), DividerItemDecoration.VERTICAL));
         list.setAdapter(listAdapter);
@@ -76,12 +77,19 @@ public class MainActivity extends AppCompatActivity {
         d.show();
     }
 
+    public boolean removePerson(int pos) {
+        if (people.size() < pos - 1) return false;
+        people.remove(pos);
+        listAdapter.notifyItemRemoved(pos);
+        return true;
+    }
+
     class peopleAdapter extends RecyclerView.Adapter<peopleAdapter.ViewHolder> {
 
         LayoutInflater layoutInflater;
         private ArrayList<Dictionary<String, String>> Data;
 
-        public class ViewHolder extends RecyclerView.ViewHolder {
+        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
             public final TextView name;
             public final TextView uid;
 
@@ -89,7 +97,14 @@ public class MainActivity extends AppCompatActivity {
                 super(view);
                 name = (TextView) view.findViewById(R.id.name);
                 uid =  (TextView) view.findViewById(R.id.uid);
+                view.setOnLongClickListener(this);
             }
+
+            @Override
+            public boolean onLongClick(View v) {
+                return MainActivity.this.removePerson(getAdapterPosition());
+            }
+
         }
 
         public peopleAdapter(ArrayList<Dictionary<String, String>> __data) {
@@ -118,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
         // Replace the contents of a view (invoked by the layout manager)
         @Override
         public void onBindViewHolder(ViewHolder viewHolder, final int pos) {
-            viewHolder.name.setText((pos + 1) + ". " + Data.get(pos).get("name"));
+            viewHolder.name.setText(Data.get(pos).get("name"));
             viewHolder.uid.setText("UID: " + Data.get(pos).get("uid"));
         }
 
