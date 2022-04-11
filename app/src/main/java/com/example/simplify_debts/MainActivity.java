@@ -21,6 +21,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
@@ -29,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    private ImageView addPeople;
+    private FloatingActionButton addPeople;
     private Button nextButton;
     RecyclerView list;
     private peopleAdapter listAdapter;
@@ -53,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
         addPeople.setOnClickListener(v -> addPeopleToList());
         nextButton.setOnClickListener(v -> startActivity(new Intent(this, CalculateActivity.class)));
         list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        list.addItemDecoration(new DividerItemDecoration(list.getContext(), DividerItemDecoration.VERTICAL));
         list.setAdapter(listAdapter);
     }
 
@@ -97,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
     private void addPeopleToList() {
         View v = LayoutInflater.from(this).inflate(R.layout.person_dialog, null);
         EditText et = v.findViewById(R.id.name);
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setView(v)
                 .setTitle("Add a person")
                 .setPositiveButton("Add", ((dialogInterface, i) -> {

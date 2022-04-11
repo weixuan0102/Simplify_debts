@@ -21,6 +21,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 import java.util.ArrayList;
 
 public class CalculateActivity extends AppCompatActivity {
@@ -34,11 +36,15 @@ public class CalculateActivity extends AppCompatActivity {
         setView();
         getMessage();
 
+        transactionsAdapter = new MyTransactionsAdapter(debt);
         addButton.setOnClickListener(v -> addTransaction());
         previousButton.setOnClickListener(v -> finish());
         calculateButton.setOnClickListener(v -> cal());
+        list.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        list.setAdapter(transactionsAdapter);
     }
 
+    private MyTransactionsAdapter transactionsAdapter;
     private ImageView addButton;
     private Button previousButton;
     private Button calculateButton;
@@ -46,8 +52,8 @@ public class CalculateActivity extends AppCompatActivity {
     private ArrayList<Integer> debt = new ArrayList<>();
     private ArrayList<Integer> giver = new ArrayList<>();
     private ArrayList<Integer> taker = new ArrayList<>();
-    private MyTransactionsAdapter transactionsAdapter = new MyTransactionsAdapter(debt);
 //    LinearLayout linearLayout = findViewById(R.id.linearLayout);
+    private RecyclerView list;
 
 
     private ArrayList<String>uid;
@@ -57,9 +63,7 @@ public class CalculateActivity extends AppCompatActivity {
         previousButton = findViewById(R.id.previous);
         calculateButton = findViewById(R.id.calculate);
         addButton = findViewById(R.id.addTransactions);
-        RecyclerView list = findViewById(R.id.Transactions);
-        list.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
-        list.setAdapter(transactionsAdapter);
+        list = findViewById(R.id.Transactions);
 //        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
 //        itemTouchHelper.attachToRecyclerView(list);
     }
@@ -75,21 +79,20 @@ public class CalculateActivity extends AppCompatActivity {
 
     private void addTransaction(){
         View v = LayoutInflater.from(this).inflate(R.layout.transaction_dialog, null);
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
             .setView(v)
             .setTitle("Add a transaction")
-            .setPositiveButton("Add", (dialogInterface, i) -> dialogInterface.dismiss())
+            .setPositiveButton("Add", (dialogInterface, i) -> {
+                giver.add(0);
+                taker.add(0);
+                debt.add(0);
+                transactionsAdapter.notifyDataSetChanged();
+                dialogInterface.dismiss();
+            })
             .setNegativeButton("Cancel", ((dialogInterface, i) -> dialogInterface.dismiss()))
             .create()
             .show();
 
-//        if(!name.isEmpty()){
-//            giver.add(0);
-//            taker.add(0);
-//            debt.add(0);
-//            transactionsAdapter.notifyDataSetChanged();
-//        }
-//
     }
 
 //    ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT | ItemTouchHelper.DOWN | ItemTouchHelper.UP) {
@@ -149,89 +152,89 @@ public class CalculateActivity extends AppCompatActivity {
             public ViewHolder(View view){
                 super(view);
 
-                p1 = view.findViewById(R.id.p1);
-                p2 = view.findViewById(R.id.p2);
-                money = view.findViewById(R.id.money);
+//                p1 = view.findViewById(R.id.p1);
+//                p2 = view.findViewById(R.id.p2);
+//                money = view.findViewById(R.id.money);
+//
 
 
+//                p1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//                    @Override
+//                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                        int pos = getAdapterPosition();
+//                        if(pos!=RecyclerView.NO_POSITION){
+//                            giver.set(pos,p1.getSelectedItemPosition());
+////                            giver.set(pos,p1.getSelectedItem().toString());
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//                    }
+//                });
+//
+//                p2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//                    @Override
+//                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                        int pos = getAdapterPosition();
+//                        if(pos!=RecyclerView.NO_POSITION){
+//                            taker.set(pos,p2.getSelectedItemPosition());
+////                            taker.set(pos,p2.getSelectedItem().toString());
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//                    }
+//                });
 
-                p1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        int pos = getAdapterPosition();
-                        if(pos!=RecyclerView.NO_POSITION){
-                            giver.set(pos,p1.getSelectedItemPosition());
-//                            giver.set(pos,p1.getSelectedItem().toString());
-                        }
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-
-                    }
-                });
-
-                p2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        int pos = getAdapterPosition();
-                        if(pos!=RecyclerView.NO_POSITION){
-                            taker.set(pos,p2.getSelectedItemPosition());
-//                            taker.set(pos,p2.getSelectedItem().toString());
-                        }
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-
-                    }
-                });
-
-                TextWatcher textWatcher = new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                        Log.d(TAG, "beforeTextChanged: s = " + charSequence + ", start = " + i + ", count = " + i1 + ", after = " + i2);
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                        Log.d(TAG, "onTextChanged: s = " + charSequence + ", start = " + i + ", before = " + i1 + ", count = " + i2);
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                        Log.d(TAG, "afterTextChanged: " + s);
-                        int pos = getAdapterPosition();
-                        if (pos != RecyclerView.NO_POSITION) {
-                            if(!s.toString().equals("")){
-                                dataSet.set(pos,Integer.parseInt(s.toString()));
-                            }
-                        }
-                    }
-                };
-
-                money.setOnFocusChangeListener(new View.OnFocusChangeListener(){
-                    @Override
-                    public void onFocusChange(View v,boolean hasFocus){
-                        if(hasFocus){
-                            money.addTextChangedListener(textWatcher);
-                        }else{
-                            money.removeTextChangedListener(textWatcher);
-                        }
-                    }
-                });
-
-                view.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View view) {
-                        int pos = getAdapterPosition();
-                        if (pos != RecyclerView.NO_POSITION) {
-                            onItemLongClick(pos);
-                        }
-
-                        return true;
-                    }
-                });
+//                TextWatcher textWatcher = new TextWatcher() {
+//                    @Override
+//                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//                        Log.d(TAG, "beforeTextChanged: s = " + charSequence + ", start = " + i + ", count = " + i1 + ", after = " + i2);
+//                    }
+//
+//                    @Override
+//                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//                        Log.d(TAG, "onTextChanged: s = " + charSequence + ", start = " + i + ", before = " + i1 + ", count = " + i2);
+//                    }
+//
+//                    @Override
+//                    public void afterTextChanged(Editable s) {
+//                        Log.d(TAG, "afterTextChanged: " + s);
+//                        int pos = getAdapterPosition();
+//                        if (pos != RecyclerView.NO_POSITION) {
+//                            if(!s.toString().equals("")){
+//                                dataSet.set(pos,Integer.parseInt(s.toString()));
+//                            }
+//                        }
+//                    }
+//                };
+//
+//                money.setOnFocusChangeListener(new View.OnFocusChangeListener(){
+//                    @Override
+//                    public void onFocusChange(View v,boolean hasFocus){
+//                        if(hasFocus){
+//                            money.addTextChangedListener(textWatcher);
+//                        }else{
+//                            money.removeTextChangedListener(textWatcher);
+//                        }
+//                    }
+//                });
+//
+//                view.setOnLongClickListener(new View.OnLongClickListener() {
+//                    @Override
+//                    public boolean onLongClick(View view) {
+//                        int pos = getAdapterPosition();
+//                        if (pos != RecyclerView.NO_POSITION) {
+//                            onItemLongClick(pos);
+//                        }
+//
+//                        return true;
+//                    }
+//                });
             }
 
         }
@@ -239,14 +242,14 @@ public class CalculateActivity extends AppCompatActivity {
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.activity_transactions,viewGroup,false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.transaction_list,viewGroup,false);
             return new ViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            setSpinner(holder.p1,name);
-            setSpinner(holder.p2,name);
+//            setSpinner(holder.p1,name);
+//            setSpinner(holder.p2,name);
             holder.p1.setSelection(giver.get(position));
             holder.p2.setSelection(taker.get(position));
             holder.money.setText(dataSet.get(position).toString());

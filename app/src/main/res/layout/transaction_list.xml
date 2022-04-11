@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp">
+
+    <com.google.android.material.card.MaterialCardView
+        style="@style/Widget.Material3.CardView.Elevated"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/giver"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Giver"
+                android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Space
+                android:id="@+id/spacer1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                app:layout_constraintBottom_toBottomOf="@id/giver"
+                app:layout_constraintLeft_toRightOf="@+id/giver"
+                app:layout_constraintTop_toTopOf="@id/giver" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imageview1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:rotation="-90"
+                android:src="@drawable/ic_baseline_arrow_downward_24"
+                app:layout_constraintBottom_toBottomOf="@id/giver"
+                app:layout_constraintLeft_toRightOf="@+id/spacer1"
+                app:layout_constraintTop_toTopOf="@id/giver" />
+
+            <Space
+                android:id="@+id/spacer2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                app:layout_constraintBottom_toBottomOf="@id/imageview1"
+                app:layout_constraintLeft_toRightOf="@+id/imageview1"
+                app:layout_constraintTop_toTopOf="@id/imageview1" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/receviver"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Recevier"
+                android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
+                app:layout_constraintBottom_toBottomOf="@id/spacer2"
+                app:layout_constraintLeft_toLeftOf="@id/spacer2"
+                app:layout_constraintTop_toTopOf="@id/spacer2" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="100"
+                android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
+                app:layout_constraintBottom_toBottomOf="@id/receviver"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/receviver"
+
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
