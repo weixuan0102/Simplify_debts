@@ -22,8 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Hashtable;
+import java.util.Set;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,8 +32,12 @@ public class MainActivity extends AppCompatActivity {
     private ImageView addPeople;
     private Button nextButton;
     RecyclerView list;
-    private ArrayList<Dictionary<String, String>> people;
     private peopleAdapter listAdapter;
+    private SharedPreferences preferences;
+    private ArrayList<String> uidList;
+    private ArrayList<String> nameList;
+    private Set<String> nameSet;
+    private Set<String> uidSet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +45,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setViews();
 
-        SharedPreferences preferences = getSharedPreferences("peopleList", MODE_PRIVATE);
-        Log.d(TAG, preferences.getStringSet("people", new ArraySet<>()).toString());
-        people = new ArrayList<>();
-        listAdapter = new peopleAdapter(people);
+        uidList = new ArrayList<>();
+        nameList = new ArrayList<>();
+        preferences = getSharedPreferences("peopleList", MODE_PRIVATE);
+        loadPreferences();
+        listAdapter = new peopleAdapter(uidList, nameList);
         addPeople.setOnClickListener(v -> addPeopleToList());
         nextButton.setOnClickListener(v -> startActivity(new Intent(this, CalculateActivity.class)));
         list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -53,10 +57,41 @@ public class MainActivity extends AppCompatActivity {
         list.setAdapter(listAdapter);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadPreferences();
+        listAdapter.notifyDataSetChanged();
+    }
+
     private void setViews(){
         list = findViewById(R.id.peopleList);
         addPeople =  findViewById(R.id.addPerson);
         nextButton = findViewById(R.id.nextButton);
+    }
+
+    private void loadPreferences() {
+        nameSet = preferences.getStringSet("name", new ArraySet<>());
+        uidSet = preferences.getStringSet("uid", new ArraySet<>());
+        nameList.clear();
+        uidList.clear();
+        nameList.addAll(nameSet);
+        uidList.addAll(uidSet);
+        Log.d(TAG, nameSet.toString());
+        Log.d(TAG, uidSet.toString());
+    }
+
+    private void savePreferences() {
+        nameSet.clear();
+        uidSet.clear();
+        nameSet.addAll(nameList);
+        uidSet.addAll(uidList);
+        preferences
+                .edit()
+                .clear()
+                .putStringSet("name", nameSet)
+                .putStringSet("uid", uidSet)
+                .apply();
     }
 
     private void addPeopleToList() {
@@ -71,29 +106,34 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Name can not be empty.", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    Dictionary<String, String> person = new Hashtable<>();
-                    person.put("uid", (UUID.randomUUID()).toString().replace("-", ""));
-                    person.put("name", name);
-                    people.add(person);
-                    Log.d(TAG, "addPeopleToList: " + people);
-                    listAdapter.notifyItemInserted(people.size()-1);
+                    addPerson(name);
                     dialogInterface.dismiss();
                 }))
-                .setNegativeButton("Cancel", ((dialogInterface, i) -> {dialogInterface.dismiss();}))
+                .setNegativeButton("Cancel", ((dialogInterface, i) -> dialogInterface.dismiss()))
                 .create()
                 .show();
     }
 
+    public void addPerson(String name) {
+        nameList.add(name);
+        uidList.add((UUID.randomUUID()).toString().replace("-", ""));
+        savePreferences();
+        listAdapter.notifyItemInserted(uidList.size()-1);
+    }
+
     public boolean removePerson(int pos) {
-        if (people.size() < pos - 1) return false;
-        people.remove(pos);
+        if (uidList.size() < pos - 1) return false;
+        uidList.remove(pos);
+        nameList.remove(pos);
         listAdapter.notifyItemRemoved(pos);
+        savePreferences();
         return true;
     }
 
     class peopleAdapter extends RecyclerView.Adapter<peopleAdapter.ViewHolder> {
 
-        private final ArrayList<Dictionary<String, String>> Data;
+        private ArrayList<String> uidList;
+        private ArrayList<String> nameList;
 
         public class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
             public final TextView name;
@@ -113,14 +153,15 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        public peopleAdapter(ArrayList<Dictionary<String, String>> __data) {
+        public peopleAdapter(ArrayList<String> __uidList, ArrayList<String> __nameList) {
             super();
-            Data = __data;
+            uidList = __uidList;
+            nameList = __nameList;
         }
 
         @Override
         public int getItemCount() {
-            return Data.size();
+            return uidList.size();
         }
 
         @Override
@@ -140,8 +181,8 @@ public class MainActivity extends AppCompatActivity {
         // Replace the contents of a view (invoked by the layout manager)
         @Override
         public void onBindViewHolder(ViewHolder viewHolder, final int pos) {
-            viewHolder.name.setText(Data.get(pos).get("name"));
-            viewHolder.uid.setText("UID: " + Data.get(pos).get("uid"));
+            viewHolder.name.setText(nameList.get(pos));
+            viewHolder.uid.setText(uidList.get(pos));
         }
 
     }
