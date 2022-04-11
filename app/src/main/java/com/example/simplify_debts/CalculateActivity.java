@@ -7,9 +7,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.ArraySet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,25 +26,11 @@ import android.widget.Spinner;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 public class CalculateActivity extends AppCompatActivity {
 
     private static final String TAG = "CalculateActivity";
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_calculate);
-        setView();
-        getMessage();
-
-        transactionsAdapter = new MyTransactionsAdapter(debt);
-        addButton.setOnClickListener(v -> addTransaction());
-        previousButton.setOnClickListener(v -> finish());
-        calculateButton.setOnClickListener(v -> cal());
-        list.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
-        list.setAdapter(transactionsAdapter);
-    }
 
     private MyTransactionsAdapter transactionsAdapter;
     private ImageView addButton;
@@ -52,12 +40,39 @@ public class CalculateActivity extends AppCompatActivity {
     private ArrayList<Integer> debt = new ArrayList<>();
     private ArrayList<Integer> giver = new ArrayList<>();
     private ArrayList<Integer> taker = new ArrayList<>();
-//    LinearLayout linearLayout = findViewById(R.id.linearLayout);
+    //    LinearLayout linearLayout = findViewById(R.id.linearLayout);
+    private Set<String> nameSet = new ArraySet<String>();
+    private Set<String> uidSet = new ArraySet<String>();
+    private ArrayList<String> nameList = new ArrayList<>();
+    private ArrayList<String> uidList = new ArrayList<>();
     private RecyclerView list;
 
 
     private ArrayList<String>uid;
     private ArrayList<String>name;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_calculate);
+        setView();
+        getMessage();
+
+        SharedPreferences preferences = getSharedPreferences("peopleList", MODE_PRIVATE);
+        nameSet = preferences.getStringSet("name", new ArraySet<>());
+        uidSet = preferences.getStringSet("uid", new ArraySet<>());
+        nameList.clear();
+        uidList.clear();
+        nameList.addAll(nameSet);
+        uidList.addAll(uidSet);
+
+        transactionsAdapter = new MyTransactionsAdapter(debt);
+        addButton.setOnClickListener(v -> addTransaction());
+        previousButton.setOnClickListener(v -> finish());
+        calculateButton.setOnClickListener(v -> cal());
+        list.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        list.setAdapter(transactionsAdapter);
+    }
 
     private void setView(){
         previousButton = findViewById(R.id.previous);
@@ -79,14 +94,16 @@ public class CalculateActivity extends AppCompatActivity {
 
     private void addTransaction(){
         View v = LayoutInflater.from(this).inflate(R.layout.transaction_dialog, null);
+        Spinner nameSpinnerSrc = v.findViewById(R.id.person_spinner_source);
+        Spinner nameSpinnerDst= v.findViewById(R.id.person_spinner_dest);
+
+        nameSpinnerSrc.setAdapter(new ArrayAdapter<>(this, com.google.android.material.R.layout.support_simple_spinner_dropdown_item, nameList));
+        nameSpinnerDst.setAdapter(new ArrayAdapter<>(this, com.google.android.material.R.layout.support_simple_spinner_dropdown_item, nameList));
+
         new MaterialAlertDialogBuilder(this)
             .setView(v)
             .setTitle("Add a transaction")
             .setPositiveButton("Add", (dialogInterface, i) -> {
-                giver.add(0);
-                taker.add(0);
-                debt.add(0);
-                transactionsAdapter.notifyDataSetChanged();
                 dialogInterface.dismiss();
             })
             .setNegativeButton("Cancel", ((dialogInterface, i) -> dialogInterface.dismiss()))

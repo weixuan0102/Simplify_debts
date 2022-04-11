@@ -1,12 +1,5 @@
 package com.example.simplify_debts;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -17,9 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -66,9 +63,9 @@ public class MainActivity extends AppCompatActivity {
         listAdapter.notifyDataSetChanged();
     }
 
-    private void setViews(){
+    private void setViews() {
         list = findViewById(R.id.peopleList);
-        addPeople =  findViewById(R.id.addPerson);
+        addPeople = findViewById(R.id.addPerson);
         nextButton = findViewById(R.id.nextButton);
     }
 
@@ -107,6 +104,9 @@ public class MainActivity extends AppCompatActivity {
                     if (name.length() == 0) {
                         Toast.makeText(MainActivity.this, "Name can not be empty.", Toast.LENGTH_SHORT).show();
                         return;
+                    } else if (nameList.contains(name)) {
+                        Toast.makeText(MainActivity.this, "Name duplicate.", Toast.LENGTH_SHORT).show();
+                        return;
                     }
                     addPerson(name);
                     dialogInterface.dismiss();
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         nameList.add(name);
         uidList.add((UUID.randomUUID()).toString().replace("-", ""));
         savePreferences();
-        listAdapter.notifyItemInserted(uidList.size()-1);
+        listAdapter.notifyItemInserted(uidList.size() - 1);
     }
 
     public boolean removePerson(int pos) {
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
             public ViewHolder(View view) {
                 super(view);
                 name = (TextView) view.findViewById(R.id.name);
-                uid =  (TextView) view.findViewById(R.id.uid);
+                uid = (TextView) view.findViewById(R.id.uid);
                 view.setOnLongClickListener(this);
             }
 
