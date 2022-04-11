@@ -1,5 +1,6 @@
 package com.example.simplify_debts;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -7,7 +8,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.ArraySet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageView addPeople;
     private Button nextButton;
     RecyclerView list;
-    private ArrayList<Dictionary<String, String>> people = new ArrayList<>();
-    private final peopleAdapter listAdapter = new peopleAdapter(people);
+    private ArrayList<Dictionary<String, String>> people;
+    private peopleAdapter listAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,23 +42,27 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setViews();
 
+        SharedPreferences preferences = getSharedPreferences("peopleList", MODE_PRIVATE);
+        Log.d(TAG, preferences.getStringSet("people", new ArraySet<>()).toString());
+        people = new ArrayList<>();
+        listAdapter = new peopleAdapter(people);
         addPeople.setOnClickListener(v -> addPeopleToList());
         nextButton.setOnClickListener(v -> startActivity(new Intent(this, CalculateActivity.class)));
+        list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        list.addItemDecoration(new DividerItemDecoration(list.getContext(), DividerItemDecoration.VERTICAL));
+        list.setAdapter(listAdapter);
     }
 
     private void setViews(){
         list = findViewById(R.id.peopleList);
         addPeople =  findViewById(R.id.addPerson);
         nextButton = findViewById(R.id.nextButton);
-        list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        list.addItemDecoration(new DividerItemDecoration(list.getContext(), DividerItemDecoration.VERTICAL));
-        list.setAdapter(listAdapter);
     }
 
     private void addPeopleToList() {
         View v = LayoutInflater.from(this).inflate(R.layout.person_dialog, null);
         EditText et = v.findViewById(R.id.name);
-        AlertDialog d = new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this)
                 .setView(v)
                 .setTitle("Add a person")
                 .setPositiveButton("Add", ((dialogInterface, i) -> {
@@ -73,8 +80,8 @@ public class MainActivity extends AppCompatActivity {
                     dialogInterface.dismiss();
                 }))
                 .setNegativeButton("Cancel", ((dialogInterface, i) -> {dialogInterface.dismiss();}))
-                .create();
-        d.show();
+                .create()
+                .show();
     }
 
     public boolean removePerson(int pos) {
@@ -86,8 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
     class peopleAdapter extends RecyclerView.Adapter<peopleAdapter.ViewHolder> {
 
-        LayoutInflater layoutInflater;
-        private ArrayList<Dictionary<String, String>> Data;
+        private final ArrayList<Dictionary<String, String>> Data;
 
         public class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
             public final TextView name;
@@ -123,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Create new views (invoked by the layout manager)
+        @NonNull
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
             // Create a new view, which defines the UI of the list item

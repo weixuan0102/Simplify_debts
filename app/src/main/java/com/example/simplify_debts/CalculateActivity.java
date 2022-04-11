@@ -75,13 +75,13 @@ public class CalculateActivity extends AppCompatActivity {
 
     private void addTransaction(){
         View v = LayoutInflater.from(this).inflate(R.layout.transaction_dialog, null);
-        AlertDialog d = new AlertDialog.Builder(this)
-                .setView(v)
-                .setTitle("Add a transaction")
-                .setPositiveButton("Add", (dialogInterface, i) -> dialogInterface.dismiss())
-                .setNegativeButton("Cancel", ((dialogInterface, i) -> dialogInterface.dismiss()))
-                .create();
-        d.show();
+        new AlertDialog.Builder(this)
+            .setView(v)
+            .setTitle("Add a transaction")
+            .setPositiveButton("Add", (dialogInterface, i) -> dialogInterface.dismiss())
+            .setNegativeButton("Cancel", ((dialogInterface, i) -> dialogInterface.dismiss()))
+            .create()
+            .show();
 
 //        if(!name.isEmpty()){
 //            giver.add(0);
