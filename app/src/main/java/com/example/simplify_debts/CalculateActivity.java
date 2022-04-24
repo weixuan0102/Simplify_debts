@@ -116,10 +116,11 @@ public class CalculateActivity extends AppCompatActivity {
     }
 
     public boolean removeTran(int pos) {
-        if (debt_list.size() <= pos) return false;
+        if (debt_list.size() < pos - 1) return false;
         debt_list.remove(pos);
         giver_list.remove(pos);
         receiver_list.remove(pos);
+        transactionsAdapter.notifyItemRemoved(pos);
         return true;
     }
 
@@ -143,7 +144,7 @@ public class CalculateActivity extends AppCompatActivity {
         private ArrayList<String> give_list;
         private ArrayList<Integer> debt_list;
 
-        class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
+        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
             private TextView giver, receiver, money;
 
             public ViewHolder(View v){
@@ -151,10 +152,12 @@ public class CalculateActivity extends AppCompatActivity {
                 giver = v.findViewById(R.id.giver);
                 receiver = v.findViewById(R.id.receviver);
                 money = v.findViewById(R.id.money);
+                v.setOnLongClickListener(this);
             }
 
             @Override
             public boolean onLongClick(View v) {
+                Log.d(TAG, String.valueOf(getAdapterPosition()));
                 return CalculateActivity.this.removeTran(getAdapterPosition());
             }
         }
@@ -183,11 +186,11 @@ public class CalculateActivity extends AppCompatActivity {
             return position;
         }
 
-        public <T, G, E>MyTransactionsAdapter (T __giver_list, G __receiver_list, E __debt_list){
+        public MyTransactionsAdapter (ArrayList<String> __giver_list, ArrayList<String> __receiver_list, ArrayList<Integer> __debt_list){
             super();
-            this.debt_list = (ArrayList<Integer>) __debt_list;
-            this.give_list = (ArrayList<String>) __giver_list;
-            this.recv_list = (ArrayList<String>) __receiver_list;
+            this.debt_list = __debt_list;
+            this.give_list = __giver_list;
+            this.recv_list = __receiver_list;
         }
     }
 
