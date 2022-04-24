@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         nameList = new ArrayList<>();
         preferences = getSharedPreferences("peopleList", MODE_PRIVATE);
         loadPreferences();
+        nextButton.setEnabled(nameList.size() >= 2);
         listAdapter = new peopleAdapter(uidList, nameList);
         addPeople.setOnClickListener(v -> addPeopleToList());
         nextButton.setOnClickListener(v -> startActivity(new Intent(this, CalculateActivity.class)));
@@ -109,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     }
                     addPerson(name);
+                    savePreferences();
+                    nextButton.setEnabled(nameList.size() >= 2);
                     dialogInterface.dismiss();
                 }))
                 .setNegativeButton("Cancel", ((dialogInterface, i) -> dialogInterface.dismiss()))
@@ -119,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
     public void addPerson(String name) {
         nameList.add(name);
         uidList.add((UUID.randomUUID()).toString().replace("-", ""));
-        savePreferences();
         listAdapter.notifyItemInserted(uidList.size() - 1);
     }
 
@@ -128,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
         uidList.remove(pos);
         nameList.remove(pos);
         listAdapter.notifyItemRemoved(pos);
-        savePreferences();
         return true;
     }
 
@@ -150,7 +151,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onLongClick(View v) {
-                return MainActivity.this.removePerson(getAdapterPosition());
+                boolean ret = MainActivity.this.removePerson(getAdapterPosition());
+                savePreferences();
+                nextButton.setEnabled(nameList.size() >= 2);
+                return ret;
             }
 
         }
