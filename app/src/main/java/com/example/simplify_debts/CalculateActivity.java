@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.ArraySet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -112,16 +113,18 @@ public class CalculateActivity extends AppCompatActivity {
     }
 
     private void cal(){
-//        System.out.println(giver);
-//        System.out.println(receiver);
-//        System.out.println(debt);
-//
-//        Main main = new Main();
-//        Intent intent;
-//        intent = main.createGraph(name.toArray(new String[0]),giver.size(),giver, receiver,debt);
-//        intent.setClass(CalculateActivity.this,ResultActivity.class);
-//        startActivity(intent);
+        ArrayList<Integer> giver_index = new ArrayList<>();
+        ArrayList<Integer> receiver_index = new ArrayList<>();
 
+        for (int i = 0;i<debt_list.size();i++) {
+            giver_index.add(nameList.indexOf(giver_list.get(i)));
+            receiver_index.add(nameList.indexOf(receiver_list.get(i)));
+        }
+
+        Intent intent;
+        intent = new Main().createGraph(nameList.toArray(new String[0]), debt_list.size(),giver_index, receiver_index, debt_list);
+        intent.setClass(CalculateActivity.this,ResultActivity.class);
+        startActivity(intent);
     }
 
     public class MyTransactionsAdapter extends RecyclerView.Adapter<MyTransactionsAdapter.ViewHolder>{
