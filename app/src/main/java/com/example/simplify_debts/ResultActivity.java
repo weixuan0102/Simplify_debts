@@ -53,14 +53,14 @@ public class ResultActivity extends AppCompatActivity {
         private ArrayList<String> dataSet;
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            private TextView giver, taker, money;
+            private TextView giver, receiver, money;
 
             public ViewHolder(View view) {
                 super(view);
 
                 giver = view.findViewById(R.id.giver);
-                taker = view.findViewById(R.id.taker);
-                money = view.findViewById(R.id.debt);
+                receiver = view.findViewById(R.id.receviver);
+                money = view.findViewById(R.id.money);
 
             }
 
@@ -69,15 +69,15 @@ public class ResultActivity extends AppCompatActivity {
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.result_list, viewGroup, false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.transaction_list, viewGroup, false);
             return new ViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             holder.giver.setText(giver.get(position));
-            holder.taker.setText(taker.get(position));
-            holder.money.setText("$" + dataSet.get(position));
+            holder.receiver.setText(taker.get(position));
+            holder.money.setText(dataSet.get(position));
 
         }
 

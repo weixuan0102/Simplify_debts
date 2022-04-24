@@ -66,6 +66,15 @@
                 app:layout_constraintLeft_toLeftOf="@id/spacer2"
                 app:layout_constraintTop_toTopOf="@id/spacer2" />
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_attach_money_24"
+                app:layout_constraintRight_toLeftOf="@+id/money"
+                app:layout_constraintTop_toTopOf="@+id/money"
+                app:layout_constraintBottom_toBottomOf="@id/money"
+                />
+
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/money"
                 android:layout_width="wrap_content"
