@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
@@ -53,7 +54,6 @@ public class CalculateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calculate);
         setView();
-        getMessage();
 
         SharedPreferences preferences = getSharedPreferences("peopleList", MODE_PRIVATE);
         nameSet = preferences.getStringSet("name", new ArraySet<>());
@@ -78,15 +78,6 @@ public class CalculateActivity extends AppCompatActivity {
         list = findViewById(R.id.Transactions);
     }
 
-
-    private void getMessage(){
-        Intent intent = getIntent();
-        uid = intent.getStringArrayListExtra("uid");
-        name = intent.getStringArrayListExtra("name");
-        System.out.println(uid);
-        System.out.println(name);
-    }
-
     private void addTransaction(){
         View v = LayoutInflater.from(this).inflate(R.layout.transaction_dialog, null);
         Spinner nameSpinnerSrc = v.findViewById(R.id.person_spinner_source);
@@ -95,21 +86,41 @@ public class CalculateActivity extends AppCompatActivity {
 
         nameSpinnerSrc.setAdapter(new ArrayAdapter<>(this, com.google.android.material.R.layout.support_simple_spinner_dropdown_item, nameList));
         nameSpinnerDst.setAdapter(new ArrayAdapter<>(this, com.google.android.material.R.layout.support_simple_spinner_dropdown_item, nameList));
+        nameSpinnerSrc.setSelection(0);
+        nameSpinnerDst.setSelection(1);
 
         new MaterialAlertDialogBuilder(this)
             .setView(v)
             .setTitle("Add a transaction")
             .setPositiveButton("Add", (dialogInterface, i) -> {
-                debt_list.add(Integer.parseInt(moneyInput.getText().toString()));
-                giver_list.add(nameSpinnerSrc.getSelectedItem().toString());
-                receiver_list.add(nameSpinnerDst.getSelectedItem().toString());
-                transactionsAdapter.notifyItemInserted(debt_list.size() - 1);
+                String m = moneyInput.getText().toString();
+                if (m.isEmpty()) {
+                    Toast.makeText(CalculateActivity.this, "debt can not be empty.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Integer money = Integer.parseInt(m);
+                addTran(money, nameSpinnerSrc.getSelectedItem().toString(), nameSpinnerDst.getSelectedItem().toString());
                 dialogInterface.dismiss();
             })
             .setNegativeButton("Cancel", ((dialogInterface, i) -> dialogInterface.dismiss()))
             .create()
             .show();
 
+    }
+
+    public void addTran(Integer money, String giver, String receiver) {
+        debt_list.add(money);
+        giver_list.add(giver);
+        receiver_list.add(receiver);
+        transactionsAdapter.notifyItemInserted(debt_list.size() - 1);
+    }
+
+    public boolean removeTran(int pos) {
+        if (debt_list.size() <= pos) return false;
+        debt_list.remove(pos);
+        giver_list.remove(pos);
+        receiver_list.remove(pos);
+        return true;
     }
 
     private void cal(){
@@ -132,7 +143,7 @@ public class CalculateActivity extends AppCompatActivity {
         private ArrayList<String> give_list;
         private ArrayList<Integer> debt_list;
 
-        class ViewHolder extends RecyclerView.ViewHolder{
+        class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
             private TextView giver, receiver, money;
 
             public ViewHolder(View v){
@@ -142,6 +153,10 @@ public class CalculateActivity extends AppCompatActivity {
                 money = v.findViewById(R.id.money);
             }
 
+            @Override
+            public boolean onLongClick(View v) {
+                return CalculateActivity.this.removeTran(getAdapterPosition());
+            }
         }
 
         @NonNull
