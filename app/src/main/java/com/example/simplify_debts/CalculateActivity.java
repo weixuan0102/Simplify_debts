@@ -133,8 +133,10 @@ public class CalculateActivity extends AppCompatActivity {
             receiver_index.add(nameList.indexOf(receiver_list.get(i)));
         }
 
-        Intent intent;
-        intent = new Main().createGraph(nameList.toArray(new String[0]), debt_list.size(),giver_index, receiver_index, debt_list);
+        Intent intent1,intent2,intent;
+        intent1 = new Main().createGraph(nameList.toArray(new String[0]), debt_list.size(),giver_index, receiver_index, debt_list);
+        intent2 = Greedy.main(giver_index, receiver_index, debt_list);
+        intent = (intent1.getStringArrayListExtra("giver").size()<intent2.getStringArrayListExtra("giver").size())?intent1:intent2;
         intent.setClass(CalculateActivity.this,ResultActivity.class);
         startActivity(intent);
     }
