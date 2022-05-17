@@ -140,13 +140,56 @@ public class CalculateActivity extends AppCompatActivity {
         }
 
         Intent intent1, intent2, intent;
-        intent1 = new Main().createGraph(nameList.toArray(new String[0]), debt_list.size(), giver_index, receiver_index, debt_list);
-        intent2 = Greedy.main(nameList, giver_index, receiver_index, debt_list);
-        Log.d(TAG, intent1.getStringArrayListExtra("giver").toString());
-        Log.d(TAG, intent2.getStringArrayListExtra("giver").toString());
-        intent = (intent1.getStringArrayListExtra("giver").size() < intent2.getStringArrayListExtra("giver").size()) ? intent1 : intent2;
-        intent.setClass(CalculateActivity.this, ResultActivity.class);
-        startActivity(intent);
+        MaxFlowThread mt = new MaxFlowThread(giver_index,receiver_index);
+        Thread t1 = new Thread(mt);
+        GreedyThread gt = new GreedyThread(giver_index,receiver_index);
+        Thread t2 = new Thread(gt);
+        t1.start();
+        t2.start();
+        try {
+            t1.join();
+            t2.join();
+            intent1 = mt.getIntent();
+            intent2 = gt.getIntent();
+            Log.d(TAG, intent1.getStringArrayListExtra("giver").toString());
+            Log.d(TAG, intent2.getStringArrayListExtra("giver").toString());
+            intent = (intent1.getStringArrayListExtra("giver").size() < intent2.getStringArrayListExtra("giver").size()) ? intent1 : intent2;
+            intent.setClass(CalculateActivity.this, ResultActivity.class);
+            startActivity(intent);
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
+    }
+    public class MaxFlowThread implements Runnable{
+        private Intent intent;
+        ArrayList<Integer>giver_index, receiver_index;
+        @Override
+        public void run() {
+            intent = new Main().createGraph(nameList.toArray(new String[0]), debt_list.size(), giver_index, receiver_index, debt_list);
+        }
+        public MaxFlowThread(ArrayList<Integer> giver, ArrayList<Integer>taker){
+            this.giver_index = giver;
+            this.receiver_index = taker;
+        }
+        public  Intent getIntent(){
+            return intent;
+        }
+    }
+
+    public class GreedyThread implements Runnable{
+        private Intent intent;
+        ArrayList<Integer>giver_index, receiver_index;
+        @Override
+        public void run() {
+            intent = Greedy.main(nameList, giver_index, receiver_index, debt_list);
+        }
+        public GreedyThread(ArrayList<Integer> giver, ArrayList<Integer>taker){
+            this.giver_index = giver;
+            this.receiver_index = taker;
+        }
+        public Intent getIntent(){
+            return intent;
+        }
     }
 
     public class MyTransactionsAdapter extends RecyclerView.Adapter<MyTransactionsAdapter.ViewHolder> {
