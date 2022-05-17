@@ -35,11 +35,13 @@ public class ResultActivity extends AppCompatActivity {
     public ArrayList<String> taker = new ArrayList<>();
     private ArrayList<String> money = new ArrayList<>();
     private MyResultAdapter resultAdapter;
-    private Button share;
+    private Button share, previous, finish;
 
     private void setView() {
         resultAdapter = new MyResultAdapter(money);
         share = findViewById(R.id.share);
+        previous = findViewById(R.id.previous);
+        finish = findViewById(R.id.finish);
         list = findViewById(R.id.resultList);
         list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         list.setAdapter(resultAdapter);
@@ -57,6 +59,8 @@ public class ResultActivity extends AppCompatActivity {
             startActivity(Intent.createChooser(shareIntent, null));
         });
 
+        previous.setOnClickListener(v -> finish());
+        finish.setOnClickListener(v -> startActivity(new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
     }
 
     private void getData() {
