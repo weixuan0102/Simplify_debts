@@ -7,6 +7,17 @@
     android:padding="8dp"
     tools:context=".CalculateActivity">
 
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add at least two transactions (Long click item to remove):"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
     <Button
         android:id="@+id/previous"
         android:layout_width="wrap_content"
@@ -14,7 +25,7 @@
         android:layout_gravity="center"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="16dp"
-        android:text="previous"
+        android:text="Previous"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -25,7 +36,7 @@
         android:enabled="false"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="16dp"
-        android:text="calculate"
+        android:text="Calculate"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -37,7 +48,7 @@
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/calculate"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/description" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addTransactions"

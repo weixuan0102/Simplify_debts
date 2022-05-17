@@ -8,8 +8,8 @@
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2345" />
         <entry key="app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.239" />
         <entry key="app/src/main/res/drawable/ic_baseline_edit_24.xml" value="0.224" />
-        <entry key="app/src/main/res/layout/activity_calculate.xml" value="0.46010284423828124" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.23340454101562502" />
+        <entry key="app/src/main/res/layout/activity_calculate.xml" value="0.4015645371577575" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.2430939226519337" />
         <entry key="app/src/main/res/layout/activity_result.xml" value="0.29972076416015625" />
         <entry key="app/src/main/res/layout/activity_transactions.xml" value="0.2" />
         <entry key="app/src/main/res/layout/people_list.xml" value="0.49989929199218747" />
