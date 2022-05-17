@@ -98,6 +98,10 @@ public class CalculateActivity extends AppCompatActivity {
                         Toast.makeText(CalculateActivity.this, "debt can not be empty.", Toast.LENGTH_SHORT).show();
                         return;
                     }
+                    if (nameSpinnerSrc.getSelectedItem().toString().equals(nameSpinnerDst.getSelectedItem().toString())) {
+                        Toast.makeText(CalculateActivity.this, "creditor and debtor can not be the same person.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     Integer money = Integer.parseInt(m);
                     addTran(money, nameSpinnerSrc.getSelectedItem().toString(), nameSpinnerDst.getSelectedItem().toString());
                     dialogInterface.dismiss();
