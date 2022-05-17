@@ -2,6 +2,7 @@ package com.example.simplify_debts;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -47,10 +48,12 @@ public class ResultActivity extends AppCompatActivity {
         list.setAdapter(resultAdapter);
 
         share.setOnClickListener(v->{
-            list.setDrawingCacheEnabled(true);
-            list.buildDrawingCache(true);
-            Bitmap b = Bitmap.createBitmap(list.getDrawingCache());
-            list.setDrawingCacheEnabled(false);
+            list.measure(
+                    View.MeasureSpec.makeMeasureSpec(list.getWidth(), View.MeasureSpec.EXACTLY),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+            Bitmap b = Bitmap.createBitmap(list.getWidth(),list.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+            list.draw(new Canvas(b));
+
             Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), b, null,null));
             Intent shareIntent = new Intent();
             shareIntent.setAction(Intent.ACTION_SEND);
