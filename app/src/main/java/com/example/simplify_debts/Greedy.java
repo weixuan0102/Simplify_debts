@@ -10,6 +10,7 @@ import java.util.Iterator;
 public class Greedy {
     static int people = 0; // number of people
     static int debts = 0; //how many debt
+    static ArrayList<String> name_ = new ArrayList<>();
     static ArrayList<String> giver_ = new ArrayList<>();
     static ArrayList<String> taker_ = new ArrayList<>();
     static ArrayList<String> money_ = new ArrayList<>();
@@ -50,8 +51,8 @@ public class Greedy {
         System.out.println("Person " + mxDebt + " pays " + min
                 + " to " + "Person " + mxCredit);
 
-        giver_.add(Integer.toString(mxDebt));
-        taker_.add(Integer.toString(mxCredit));
+        giver_.add(name_.get(mxDebt));
+        taker_.add(name_.get(mxCredit));
         money_.add(Integer.toString(min));
         cashFlowRec(amount);
     }
@@ -69,7 +70,8 @@ public class Greedy {
         cashFlowRec(amount);
     }
 
-    static Intent main(ArrayList<Integer> giver, ArrayList<Integer>taker, ArrayList<Integer> money){
+    static Intent main(ArrayList<String> name, ArrayList<Integer> giver, ArrayList<Integer>taker, ArrayList<Integer> money){
+        name_ = name;
         int [][] graph = new int[giver.size()][3];
         debts = giver.size();
         for(int i =0;i<giver.size();i++){
@@ -80,6 +82,7 @@ public class Greedy {
                 if(people<taker.get(i))people = taker.get(i);
         }
         minimizeCashFlow(graph);
+
         Intent intent = new Intent();
         intent.putStringArrayListExtra("giver",giver_);
         intent.putStringArrayListExtra("money",money_);

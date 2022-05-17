@@ -1,10 +1,14 @@
 package com.example.simplify_debts;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -31,12 +35,27 @@ public class ResultActivity extends AppCompatActivity {
     public ArrayList<String> taker = new ArrayList<>();
     private ArrayList<String> money = new ArrayList<>();
     private MyResultAdapter resultAdapter;
+    private Button share;
 
     private void setView() {
         resultAdapter = new MyResultAdapter(money);
+        share = findViewById(R.id.share);
         list = findViewById(R.id.resultList);
         list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         list.setAdapter(resultAdapter);
+
+        share.setOnClickListener(v->{
+            list.setDrawingCacheEnabled(true);
+            list.buildDrawingCache(true);
+            Bitmap b = Bitmap.createBitmap(list.getDrawingCache());
+            list.setDrawingCacheEnabled(false);
+            Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), b, null,null));
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+            shareIntent.setType("image/jpeg");
+            startActivity(Intent.createChooser(shareIntent, null));
+        });
 
     }
 
@@ -45,7 +64,6 @@ public class ResultActivity extends AppCompatActivity {
         giver = intent.getStringArrayListExtra("giver");
         taker = intent.getStringArrayListExtra("taker");
         money = intent.getStringArrayListExtra("money");
-
     }
 
 

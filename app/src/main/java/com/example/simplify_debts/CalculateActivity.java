@@ -1,10 +1,5 @@
 package com.example.simplify_debts;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -19,6 +14,11 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
@@ -46,8 +46,8 @@ public class CalculateActivity extends AppCompatActivity {
 
     private RecyclerView list;
 
-    private ArrayList<String>uid;
-    private ArrayList<String>name;
+    private ArrayList<String> uid;
+    private ArrayList<String> name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,21 +67,21 @@ public class CalculateActivity extends AppCompatActivity {
         addButton.setOnClickListener(v -> addTransaction());
         previousButton.setOnClickListener(v -> finish());
         calculateButton.setOnClickListener(v -> cal());
-        list.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         list.setAdapter(transactionsAdapter);
     }
 
-    private void setView(){
+    private void setView() {
         previousButton = findViewById(R.id.previous);
         calculateButton = findViewById(R.id.calculate);
         addButton = findViewById(R.id.addTransactions);
         list = findViewById(R.id.Transactions);
     }
 
-    private void addTransaction(){
+    private void addTransaction() {
         View v = LayoutInflater.from(this).inflate(R.layout.transaction_dialog, null);
         Spinner nameSpinnerSrc = v.findViewById(R.id.person_spinner_source);
-        Spinner nameSpinnerDst= v.findViewById(R.id.person_spinner_dest);
+        Spinner nameSpinnerDst = v.findViewById(R.id.person_spinner_dest);
         TextInputEditText moneyInput = v.findViewById(R.id.TextInputMoney);
 
         nameSpinnerSrc.setAdapter(new ArrayAdapter<>(this, com.google.android.material.R.layout.support_simple_spinner_dropdown_item, nameList));
@@ -90,21 +90,21 @@ public class CalculateActivity extends AppCompatActivity {
         nameSpinnerDst.setSelection(1);
 
         new MaterialAlertDialogBuilder(this)
-            .setView(v)
-            .setTitle("Add a transaction")
-            .setPositiveButton("Add", (dialogInterface, i) -> {
-                String m = moneyInput.getText().toString();
-                if (m.isEmpty()) {
-                    Toast.makeText(CalculateActivity.this, "debt can not be empty.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                Integer money = Integer.parseInt(m);
-                addTran(money, nameSpinnerSrc.getSelectedItem().toString(), nameSpinnerDst.getSelectedItem().toString());
-                dialogInterface.dismiss();
-            })
-            .setNegativeButton("Cancel", ((dialogInterface, i) -> dialogInterface.dismiss()))
-            .create()
-            .show();
+                .setView(v)
+                .setTitle("Add a transaction")
+                .setPositiveButton("Add", (dialogInterface, i) -> {
+                    String m = moneyInput.getText().toString();
+                    if (m.isEmpty()) {
+                        Toast.makeText(CalculateActivity.this, "debt can not be empty.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    Integer money = Integer.parseInt(m);
+                    addTran(money, nameSpinnerSrc.getSelectedItem().toString(), nameSpinnerDst.getSelectedItem().toString());
+                    dialogInterface.dismiss();
+                })
+                .setNegativeButton("Cancel", ((dialogInterface, i) -> dialogInterface.dismiss()))
+                .create()
+                .show();
 
     }
 
@@ -124,24 +124,26 @@ public class CalculateActivity extends AppCompatActivity {
         return true;
     }
 
-    private void cal(){
+    private void cal() {
         ArrayList<Integer> giver_index = new ArrayList<>();
         ArrayList<Integer> receiver_index = new ArrayList<>();
 
-        for (int i = 0;i<debt_list.size();i++) {
+        for (int i = 0; i < debt_list.size(); i++) {
             giver_index.add(nameList.indexOf(giver_list.get(i)));
             receiver_index.add(nameList.indexOf(receiver_list.get(i)));
         }
 
-        Intent intent1,intent2,intent;
-        intent1 = new Main().createGraph(nameList.toArray(new String[0]), debt_list.size(),giver_index, receiver_index, debt_list);
-        intent2 = Greedy.main(giver_index, receiver_index, debt_list);
-        intent = (intent1.getStringArrayListExtra("giver").size()<intent2.getStringArrayListExtra("giver").size())?intent1:intent2;
-        intent.setClass(CalculateActivity.this,ResultActivity.class);
+        Intent intent1, intent2, intent;
+        intent1 = new Main().createGraph(nameList.toArray(new String[0]), debt_list.size(), giver_index, receiver_index, debt_list);
+        intent2 = Greedy.main(nameList, giver_index, receiver_index, debt_list);
+        Log.d(TAG, intent1.getStringArrayListExtra("giver").toString());
+        Log.d(TAG, intent2.getStringArrayListExtra("giver").toString());
+        intent = (intent1.getStringArrayListExtra("giver").size() < intent2.getStringArrayListExtra("giver").size()) ? intent1 : intent2;
+        intent.setClass(CalculateActivity.this, ResultActivity.class);
         startActivity(intent);
     }
 
-    public class MyTransactionsAdapter extends RecyclerView.Adapter<MyTransactionsAdapter.ViewHolder>{
+    public class MyTransactionsAdapter extends RecyclerView.Adapter<MyTransactionsAdapter.ViewHolder> {
         private ArrayList<String> recv_list;
         private ArrayList<String> give_list;
         private ArrayList<Integer> debt_list;
@@ -149,7 +151,7 @@ public class CalculateActivity extends AppCompatActivity {
         public class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
             private TextView giver, receiver, money;
 
-            public ViewHolder(View v){
+            public ViewHolder(View v) {
                 super(v);
                 giver = v.findViewById(R.id.giver);
                 receiver = v.findViewById(R.id.receviver);
@@ -167,7 +169,7 @@ public class CalculateActivity extends AppCompatActivity {
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.transaction_list,viewGroup,false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.transaction_list, viewGroup, false);
             return new ViewHolder(view);
         }
 
@@ -188,14 +190,13 @@ public class CalculateActivity extends AppCompatActivity {
             return position;
         }
 
-        public MyTransactionsAdapter (ArrayList<String> __giver_list, ArrayList<String> __receiver_list, ArrayList<Integer> __debt_list){
+        public MyTransactionsAdapter(ArrayList<String> __giver_list, ArrayList<String> __receiver_list, ArrayList<Integer> __debt_list) {
             super();
             this.debt_list = __debt_list;
             this.give_list = __giver_list;
             this.recv_list = __receiver_list;
         }
     }
-
 
 
 }
