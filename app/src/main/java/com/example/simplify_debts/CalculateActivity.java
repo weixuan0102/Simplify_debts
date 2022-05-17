@@ -104,6 +104,7 @@ public class CalculateActivity extends AppCompatActivity {
                     }
                     Integer money = Integer.parseInt(m);
                     addTran(money, nameSpinnerSrc.getSelectedItem().toString(), nameSpinnerDst.getSelectedItem().toString());
+                    calculateButton.setEnabled(debt_list.size() >= 2);
                     dialogInterface.dismiss();
                 })
                 .setNegativeButton("Cancel", ((dialogInterface, i) -> dialogInterface.dismiss()))
@@ -125,6 +126,7 @@ public class CalculateActivity extends AppCompatActivity {
         giver_list.remove(pos);
         receiver_list.remove(pos);
         transactionsAdapter.notifyItemRemoved(pos);
+        calculateButton.setEnabled(debt_list.size() >= 2);
         return true;
     }
 
