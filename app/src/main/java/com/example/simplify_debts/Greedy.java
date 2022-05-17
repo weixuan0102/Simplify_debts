@@ -71,6 +71,9 @@ public class Greedy {
     }
 
     static Intent main(ArrayList<String> name, ArrayList<Integer> giver, ArrayList<Integer>taker, ArrayList<Integer> money){
+        giver_.clear();
+        taker_.clear();
+        money_.clear();
         name_ = name;
         int [][] graph = new int[giver.size()][3];
         debts = giver.size();
