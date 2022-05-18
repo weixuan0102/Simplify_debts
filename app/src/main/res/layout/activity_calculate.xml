@@ -48,6 +48,8 @@
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/calculate"
         app:layout_constraintStart_toStartOf="parent"
+        android:paddingBottom="64dp"
+        android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@id/description" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
