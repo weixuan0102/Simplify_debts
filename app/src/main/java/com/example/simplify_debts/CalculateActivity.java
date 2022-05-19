@@ -139,7 +139,6 @@ public class CalculateActivity extends AppCompatActivity {
             receiver_index.add(nameList.indexOf(receiver_list.get(i)));
         }
 
-        Intent intent1, intent2, intent;
         MaxFlowThread mt = new MaxFlowThread(giver_index,receiver_index);
         Thread t1 = new Thread(mt);
         GreedyThread gt = new GreedyThread(giver_index,receiver_index);
@@ -149,11 +148,13 @@ public class CalculateActivity extends AppCompatActivity {
         try {
             t1.join();
             t2.join();
-            intent1 = mt.getIntent();
-            intent2 = gt.getIntent();
-            Log.d(TAG, intent1.getStringArrayListExtra("giver").toString());
-            Log.d(TAG, intent2.getStringArrayListExtra("giver").toString());
-            intent = (intent1.getStringArrayListExtra("giver").size() < intent2.getStringArrayListExtra("giver").size()) ? intent1 : intent2;
+            Intent intent = new Intent();
+            intent.putStringArrayListExtra("giver_max_flow", mt.getIntent().getStringArrayListExtra("giver"));
+            intent.putStringArrayListExtra("taker_max_flow", mt.getIntent().getStringArrayListExtra("taker"));
+            intent.putStringArrayListExtra("money_max_flow", mt.getIntent().getStringArrayListExtra("money"));
+            intent.putStringArrayListExtra("giver_greedy", gt.getIntent().getStringArrayListExtra("giver"));
+            intent.putStringArrayListExtra("taker_greedy", gt.getIntent().getStringArrayListExtra("taker"));
+            intent.putStringArrayListExtra("money_greedy", gt.getIntent().getStringArrayListExtra("money"));
             intent.setClass(CalculateActivity.this, ResultActivity.class);
             startActivity(intent);
         }catch (InterruptedException e){

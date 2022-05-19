@@ -87,9 +87,9 @@ public class Greedy {
         minimizeCashFlow(graph);
 
         Intent intent = new Intent();
-        intent.putStringArrayListExtra("giver",giver_);
-        intent.putStringArrayListExtra("money",money_);
-        intent.putStringArrayListExtra("taker",taker_);
+        intent.putStringArrayListExtra("giver", giver_);
+        intent.putStringArrayListExtra("money", money_);
+        intent.putStringArrayListExtra("taker", taker_);
         return intent;
     }
 

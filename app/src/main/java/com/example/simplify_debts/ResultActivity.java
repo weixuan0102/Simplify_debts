@@ -35,8 +35,18 @@ public class ResultActivity extends AppCompatActivity {
     public ArrayList<String> giver = new ArrayList<>();
     public ArrayList<String> taker = new ArrayList<>();
     private ArrayList<String> money = new ArrayList<>();
+
+    public ArrayList<String> giver_max_flow = new ArrayList<>();
+    public ArrayList<String> taker_max_flow = new ArrayList<>();
+    private ArrayList<String> money_max_flow = new ArrayList<>();
+
+    public ArrayList<String> giver_greedy = new ArrayList<>();
+    public ArrayList<String> taker_greedy = new ArrayList<>();
+    private ArrayList<String> money_greedy = new ArrayList<>();
+
     private MyResultAdapter resultAdapter;
     private Button share, previous, finish;
+    private Spinner selectMethods;
 
     private void setView() {
         resultAdapter = new MyResultAdapter(money);
@@ -62,15 +72,58 @@ public class ResultActivity extends AppCompatActivity {
             startActivity(Intent.createChooser(shareIntent, null));
         });
 
+        ArrayList<String> methodsList = new ArrayList<>();
+        methodsList.add("Greedy Algorithm");
+        methodsList.add("Max Flow Algorithm");
+        selectMethods.setAdapter(new ArrayAdapter<>(
+                this,
+                com.google.android.material.R.layout.support_simple_spinner_dropdown_item,
+                methodsList
+        ));
+
+        selectMethods.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                giver.clear();
+                taker.clear();
+                money.clear();
+                if (position == 0) {
+                    giver.addAll(giver_greedy);
+                    taker.addAll(taker_greedy);
+                    money.addAll(money_greedy);
+                } else {
+                    giver.addAll(giver_max_flow);
+                    taker.addAll(taker_max_flow);
+                    money.addAll(money_max_flow);
+                }
+                Log.d("Res", Integer.toString(position));
+
+                resultAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+
+            }
+        });
+
         previous.setOnClickListener(v -> finish());
         finish.setOnClickListener(v -> startActivity(new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
     }
 
     private void getData() {
         Intent intent = getIntent();
-        giver = intent.getStringArrayListExtra("giver");
-        taker = intent.getStringArrayListExtra("taker");
-        money = intent.getStringArrayListExtra("money");
+        giver_max_flow = intent.getStringArrayListExtra("giver_max_flow");
+        taker_max_flow = intent.getStringArrayListExtra("taker_max_flow");
+        money_max_flow = intent.getStringArrayListExtra("money_max_flow");
+        giver_greedy = intent.getStringArrayListExtra("giver_greedy");
+        taker_greedy = intent.getStringArrayListExtra("taker_greedy");
+        money_greedy = intent.getStringArrayListExtra("money_greedy");
+
+        boolean selection = giver_greedy.size() < giver_max_flow.size();
+        giver.addAll(selection ? giver_greedy : giver_max_flow);
+        taker.addAll(selection ? taker_greedy : taker_max_flow);
+        money.addAll(selection ? money_greedy : money_max_flow);
     }
 
 
@@ -78,14 +131,14 @@ public class ResultActivity extends AppCompatActivity {
         private ArrayList<String> dataSet;
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            private TextView giver, receiver, money;
+            private TextView giverView, receiverView, moneyView;
 
             public ViewHolder(View view) {
                 super(view);
 
-                giver = view.findViewById(R.id.giver);
-                receiver = view.findViewById(R.id.receviver);
-                money = view.findViewById(R.id.money);
+                giverView = view.findViewById(R.id.giver);
+                receiverView = view.findViewById(R.id.receviver);
+                moneyView = view.findViewById(R.id.money);
 
             }
 
@@ -100,10 +153,9 @@ public class ResultActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            holder.giver.setText(giver.get(position));
-            holder.receiver.setText(taker.get(position));
-            holder.money.setText(dataSet.get(position));
-
+            holder.giverView.setText(giver.get(position));
+            holder.receiverView.setText(taker.get(position));
+            holder.moneyView.setText(dataSet.get(position));
         }
 
         @Override
