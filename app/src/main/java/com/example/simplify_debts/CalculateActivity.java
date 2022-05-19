@@ -35,14 +35,14 @@ public class CalculateActivity extends AppCompatActivity {
     private Button previousButton;
     private Button calculateButton;
 
-    private ArrayList<Integer> debt_list = new ArrayList<>();
-    private ArrayList<String> giver_list = new ArrayList<>();
-    private ArrayList<String> receiver_list = new ArrayList<>();
+    private final ArrayList<Integer> debt_list = new ArrayList<>();
+    private final ArrayList<String> giver_list = new ArrayList<>();
+    private final ArrayList<String> receiver_list = new ArrayList<>();
 
     private Set<String> nameSet = new ArraySet<>();
     private Set<String> uidSet = new ArraySet<>();
-    private ArrayList<String> nameList = new ArrayList<>();
-    private ArrayList<String> uidList = new ArrayList<>();
+    private final ArrayList<String> nameList = new ArrayList<>();
+    private final ArrayList<String> uidList = new ArrayList<>();
 
     private RecyclerView list;
 
@@ -139,9 +139,9 @@ public class CalculateActivity extends AppCompatActivity {
             receiver_index.add(nameList.indexOf(receiver_list.get(i)));
         }
 
-        MaxFlowThread mt = new MaxFlowThread(giver_index,receiver_index);
+        MaxFlowThread mt = new MaxFlowThread(giver_index, receiver_index);
         Thread t1 = new Thread(mt);
-        GreedyThread gt = new GreedyThread(giver_index,receiver_index);
+        GreedyThread gt = new GreedyThread(giver_index, receiver_index);
         Thread t2 = new Thread(gt);
         t1.start();
         t2.start();
@@ -157,63 +157,59 @@ public class CalculateActivity extends AppCompatActivity {
             intent.putStringArrayListExtra("money_greedy", gt.getIntent().getStringArrayListExtra("money"));
             intent.setClass(CalculateActivity.this, ResultActivity.class);
             startActivity(intent);
-        }catch (InterruptedException e){
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
-    public class MaxFlowThread implements Runnable{
+
+    public class MaxFlowThread implements Runnable {
+        ArrayList<Integer> giver_index, receiver_index;
         private Intent intent;
-        ArrayList<Integer>giver_index, receiver_index;
+
+        public MaxFlowThread(ArrayList<Integer> giver, ArrayList<Integer> taker) {
+            this.giver_index = giver;
+            this.receiver_index = taker;
+        }
+
         @Override
         public void run() {
             intent = new Main().createGraph(nameList.toArray(new String[0]), debt_list.size(), giver_index, receiver_index, debt_list);
         }
-        public MaxFlowThread(ArrayList<Integer> giver, ArrayList<Integer>taker){
-            this.giver_index = giver;
-            this.receiver_index = taker;
-        }
-        public  Intent getIntent(){
+
+        public Intent getIntent() {
             return intent;
         }
     }
 
-    public class GreedyThread implements Runnable{
+    public class GreedyThread implements Runnable {
+        ArrayList<Integer> giver_index, receiver_index;
         private Intent intent;
-        ArrayList<Integer>giver_index, receiver_index;
+
+        public GreedyThread(ArrayList<Integer> giver, ArrayList<Integer> taker) {
+            this.giver_index = giver;
+            this.receiver_index = taker;
+        }
+
         @Override
         public void run() {
             intent = Greedy.main(nameList, giver_index, receiver_index, debt_list);
         }
-        public GreedyThread(ArrayList<Integer> giver, ArrayList<Integer>taker){
-            this.giver_index = giver;
-            this.receiver_index = taker;
-        }
-        public Intent getIntent(){
+
+        public Intent getIntent() {
             return intent;
         }
     }
 
     public class MyTransactionsAdapter extends RecyclerView.Adapter<MyTransactionsAdapter.ViewHolder> {
-        private ArrayList<String> recv_list;
-        private ArrayList<String> give_list;
-        private ArrayList<Integer> debt_list;
+        private final ArrayList<String> recv_list;
+        private final ArrayList<String> give_list;
+        private final ArrayList<Integer> debt_list;
 
-        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
-            private TextView giver, receiver, money;
-
-            public ViewHolder(View v) {
-                super(v);
-                giver = v.findViewById(R.id.giver);
-                receiver = v.findViewById(R.id.receviver);
-                money = v.findViewById(R.id.money);
-                v.setOnLongClickListener(this);
-            }
-
-            @Override
-            public boolean onLongClick(View v) {
-                Log.d(TAG, String.valueOf(getAdapterPosition()));
-                return CalculateActivity.this.removeTran(getAdapterPosition());
-            }
+        public MyTransactionsAdapter(ArrayList<String> __giver_list, ArrayList<String> __receiver_list, ArrayList<Integer> __debt_list) {
+            super();
+            this.debt_list = __debt_list;
+            this.give_list = __giver_list;
+            this.recv_list = __receiver_list;
         }
 
         @NonNull
@@ -240,11 +236,24 @@ public class CalculateActivity extends AppCompatActivity {
             return position;
         }
 
-        public MyTransactionsAdapter(ArrayList<String> __giver_list, ArrayList<String> __receiver_list, ArrayList<Integer> __debt_list) {
-            super();
-            this.debt_list = __debt_list;
-            this.give_list = __giver_list;
-            this.recv_list = __receiver_list;
+        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
+            private final TextView giver;
+            private final TextView receiver;
+            private final TextView money;
+
+            public ViewHolder(View v) {
+                super(v);
+                giver = v.findViewById(R.id.giver);
+                receiver = v.findViewById(R.id.receviver);
+                money = v.findViewById(R.id.money);
+                v.setOnLongClickListener(this);
+            }
+
+            @Override
+            public boolean onLongClick(View v) {
+                Log.d(TAG, String.valueOf(getAdapterPosition()));
+                return CalculateActivity.this.removeTran(getAdapterPosition());
+            }
         }
     }
 

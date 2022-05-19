@@ -28,10 +28,9 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-
+    RecyclerView list;
     private FloatingActionButton addPeople;
     private Button nextButton;
-    RecyclerView list;
     private peopleAdapter listAdapter;
     private SharedPreferences preferences;
     private ArrayList<String> uidList;
@@ -135,29 +134,8 @@ public class MainActivity extends AppCompatActivity {
 
     class peopleAdapter extends RecyclerView.Adapter<peopleAdapter.ViewHolder> {
 
-        private ArrayList<String> uidList;
-        private ArrayList<String> nameList;
-
-        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
-            public final TextView name;
-            public final TextView uid;
-
-            public ViewHolder(View view) {
-                super(view);
-                name = (TextView) view.findViewById(R.id.name);
-                uid = (TextView) view.findViewById(R.id.uid);
-                view.setOnLongClickListener(this);
-            }
-
-            @Override
-            public boolean onLongClick(View v) {
-                boolean ret = MainActivity.this.removePerson(getAdapterPosition());
-                savePreferences();
-                nextButton.setEnabled(nameList.size() >= 2);
-                return ret;
-            }
-
-        }
+        private final ArrayList<String> uidList;
+        private final ArrayList<String> nameList;
 
         public peopleAdapter(ArrayList<String> __uidList, ArrayList<String> __nameList) {
             super();
@@ -189,6 +167,27 @@ public class MainActivity extends AppCompatActivity {
         public void onBindViewHolder(ViewHolder viewHolder, final int pos) {
             viewHolder.name.setText(nameList.get(pos));
             viewHolder.uid.setText(uidList.get(pos));
+        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
+            public final TextView name;
+            public final TextView uid;
+
+            public ViewHolder(View view) {
+                super(view);
+                name = view.findViewById(R.id.name);
+                uid = view.findViewById(R.id.uid);
+                view.setOnLongClickListener(this);
+            }
+
+            @Override
+            public boolean onLongClick(View v) {
+                boolean ret = MainActivity.this.removePerson(getAdapterPosition());
+                savePreferences();
+                nextButton.setEnabled(nameList.size() >= 2);
+                return ret;
+            }
+
         }
 
     }

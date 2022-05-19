@@ -1,7 +1,6 @@
 package com.example.simplify_debts;
 
 
-import android.content.Context;
 import android.content.Intent;
 
 import java.util.ArrayList;
@@ -18,12 +17,12 @@ public class Main {
 //
 //    }
 
-    public static Intent createGraph(String[] person, int debts, ArrayList<Integer>giver, ArrayList<Integer>taker, ArrayList<Integer> money) {
+    public static Intent createGraph(String[] person, int debts, ArrayList<Integer> giver, ArrayList<Integer> taker, ArrayList<Integer> money) {
 
         int n = person.length;
 
         Dinics solver = new Dinics(n, person);
-        solver = addAllTransactions(debts,solver,giver,taker,money);
+        solver = addAllTransactions(debts, solver, giver, taker, money);
 
         System.out.println();
         System.out.println("Simplifying Debts...");
@@ -76,10 +75,10 @@ public class Main {
         return intent;
     }
 
-    private static Dinics addAllTransactions(int debts,Dinics solver,ArrayList<Integer>giver,ArrayList<Integer>taker,ArrayList<Integer>money) {
+    private static Dinics addAllTransactions(int debts, Dinics solver, ArrayList<Integer> giver, ArrayList<Integer> taker, ArrayList<Integer> money) {
 
-        for(int i =0;i<debts;i++){
-            solver.addEdge(giver.get(i),taker.get(i),money.get(i));
+        for (int i = 0; i < debts; i++) {
+            solver.addEdge(giver.get(i), taker.get(i), money.get(i));
         }
         // Transactions made by Bob
         //solver.addEdge(1, 2, 40);

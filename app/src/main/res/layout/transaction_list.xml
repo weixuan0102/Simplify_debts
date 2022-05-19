@@ -16,10 +16,10 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="25dp"
-            android:paddingTop="25dp"
             android:paddingLeft="16dp"
-            android:paddingRight="16dp">
+            android:paddingTop="25dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="25dp">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/giver"
@@ -73,10 +73,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_baseline_attach_money_24"
-                app:layout_constraintRight_toLeftOf="@+id/money"
-                app:layout_constraintTop_toTopOf="@+id/money"
                 app:layout_constraintBottom_toBottomOf="@id/money"
-                />
+                app:layout_constraintRight_toLeftOf="@+id/money"
+                app:layout_constraintTop_toTopOf="@+id/money" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/money"

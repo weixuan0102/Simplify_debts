@@ -1,13 +1,14 @@
 package com.example.simplify_debts;
 
 
+import static java.lang.Math.min;
+
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
-import static java.lang.Math.min;
 
 public class Dinics extends NetworkFlowSolverBase {
-    private int[] level;
+    private final int[] level;
 
     public Dinics(int n, String[] vertexLabels) {
         super(n, vertexLabels);

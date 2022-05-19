@@ -6,10 +6,14 @@ import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,6 +25,20 @@ import java.util.ArrayList;
 
 public class ResultActivity extends AppCompatActivity {
 
+    public ArrayList<String> giver = new ArrayList<>();
+    public ArrayList<String> taker = new ArrayList<>();
+    public ArrayList<String> giver_max_flow = new ArrayList<>();
+    public ArrayList<String> taker_max_flow = new ArrayList<>();
+    public ArrayList<String> giver_greedy = new ArrayList<>();
+    public ArrayList<String> taker_greedy = new ArrayList<>();
+    private RecyclerView list;
+    private final ArrayList<String> money = new ArrayList<>();
+    private ArrayList<String> money_max_flow = new ArrayList<>();
+    private ArrayList<String> money_greedy = new ArrayList<>();
+    private MyResultAdapter resultAdapter;
+    private Button share, previous, finish;
+    private Spinner selectMethods;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,41 +48,24 @@ public class ResultActivity extends AppCompatActivity {
         System.out.println(money);
     }
 
-    private RecyclerView list;
-
-    public ArrayList<String> giver = new ArrayList<>();
-    public ArrayList<String> taker = new ArrayList<>();
-    private ArrayList<String> money = new ArrayList<>();
-
-    public ArrayList<String> giver_max_flow = new ArrayList<>();
-    public ArrayList<String> taker_max_flow = new ArrayList<>();
-    private ArrayList<String> money_max_flow = new ArrayList<>();
-
-    public ArrayList<String> giver_greedy = new ArrayList<>();
-    public ArrayList<String> taker_greedy = new ArrayList<>();
-    private ArrayList<String> money_greedy = new ArrayList<>();
-
-    private MyResultAdapter resultAdapter;
-    private Button share, previous, finish;
-    private Spinner selectMethods;
-
     private void setView() {
         resultAdapter = new MyResultAdapter(money);
         share = findViewById(R.id.share);
         previous = findViewById(R.id.previous);
         finish = findViewById(R.id.finish);
         list = findViewById(R.id.resultList);
+        selectMethods = findViewById(R.id.methods);
         list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         list.setAdapter(resultAdapter);
 
-        share.setOnClickListener(v->{
+        share.setOnClickListener(v -> {
             list.measure(
                     View.MeasureSpec.makeMeasureSpec(list.getWidth(), View.MeasureSpec.EXACTLY),
                     View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-            Bitmap b = Bitmap.createBitmap(list.getWidth(),list.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+            Bitmap b = Bitmap.createBitmap(list.getWidth(), list.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
             list.draw(new Canvas(b));
 
-            Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), b, null,null));
+            Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), b, null, null));
             Intent shareIntent = new Intent();
             shareIntent.setAction(Intent.ACTION_SEND);
             shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
@@ -128,20 +129,11 @@ public class ResultActivity extends AppCompatActivity {
 
 
     public class MyResultAdapter extends RecyclerView.Adapter<MyResultAdapter.ViewHolder> {
-        private ArrayList<String> dataSet;
+        private final ArrayList<String> dataSet;
 
-        class ViewHolder extends RecyclerView.ViewHolder {
-            private TextView giverView, receiverView, moneyView;
-
-            public ViewHolder(View view) {
-                super(view);
-
-                giverView = view.findViewById(R.id.giver);
-                receiverView = view.findViewById(R.id.receviver);
-                moneyView = view.findViewById(R.id.money);
-
-            }
-
+        public MyResultAdapter(ArrayList<String> dataSet) {
+            super();
+            this.dataSet = dataSet;
         }
 
         @NonNull
@@ -168,9 +160,20 @@ public class ResultActivity extends AppCompatActivity {
             return position;
         }
 
-        public MyResultAdapter(ArrayList<String> dataSet) {
-            super();
-            this.dataSet = dataSet;
+        class ViewHolder extends RecyclerView.ViewHolder {
+            private final TextView giverView;
+            private final TextView receiverView;
+            private final TextView moneyView;
+
+            public ViewHolder(View view) {
+                super(view);
+
+                giverView = view.findViewById(R.id.giver);
+                receiverView = view.findViewById(R.id.receviver);
+                moneyView = view.findViewById(R.id.money);
+
+            }
+
         }
     }
 }

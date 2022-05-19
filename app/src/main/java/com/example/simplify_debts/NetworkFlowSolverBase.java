@@ -1,74 +1,26 @@
 package com.example.simplify_debts;
 
-import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class NetworkFlowSolverBase  {
+public abstract class NetworkFlowSolverBase {
 
     // To avoid overflow
     protected static final long INF = Long.MAX_VALUE;
-
-    public static class Edge {
-        public int from, to;
-        public String fromLabel, toLabel;
-        public Edge residual;
-        public long flow, cost;
-        public final long capacity, originalCost;
-
-        public Edge(int from, int to, long capacity) {
-            this(from, to, capacity, 0);
-        }
-
-        public Edge(int from, int to, long capacity, long cost) {
-            this.from = from;
-            this.to = to;
-            this.capacity = capacity;
-            originalCost = this.cost = cost;
-        }
-
-        public boolean isResidual() {
-            return capacity == 0;
-        }
-
-        public long remainingCapacity() {
-            return capacity - flow;
-        }
-
-        public void augment(long bottleNeck) {
-            flow += bottleNeck;
-            residual.flow -= bottleNeck;
-        }
-
-        public String toString(int s, int t) {
-            String u = (from == s) ? "s" : ((from == t) ? "t" : String.valueOf(from));
-            String v = (to == s) ? "s" : ((to == t) ? "t" : String.valueOf(to));
-            return String.format("Edge %s -> %s | flow = %d | capacity = %d | is residual: %s", u, v, flow,
-                    isResidual());
-        }
-    }
-    // n = number of nodes, s = source, t = sink
-
     protected int n, s, t;
-
+    // n = number of nodes, s = source, t = sink
     protected long maxFlow;
     protected long minCost;
-
     protected boolean[] minCut;
     protected List<Edge>[] graph;
     protected String[] vertexLabels;
     protected List<Edge> edges;
-
+    protected boolean solved;
     // if node i is visited: visited[i] = visitedToken;
     private int visitedToken = 1;
-    private int[] visited;
-
-    protected boolean solved;
+    private final int[] visited;
 
     public NetworkFlowSolverBase(int n, String[] vertexLabels) {
         this.n = n;
@@ -103,8 +55,6 @@ public abstract class NetworkFlowSolverBase  {
         }
     }
 
-    // add a directed edge(and residual edges) to the flow graph.
-
     public void addEdge(int from, int to, long capacity) {
         if (capacity < 0)
             throw new IllegalArgumentException("Capacity<0");
@@ -116,6 +66,8 @@ public abstract class NetworkFlowSolverBase  {
         graph[to].add(e2);
         edges.add(e1);
     }
+
+    // add a directed edge(and residual edges) to the flow graph.
 
     public void addEdge(int from, int to, long capacity, long cost) {
         Edge e1 = new Edge(from, to, capacity, cost);
@@ -135,24 +87,27 @@ public abstract class NetworkFlowSolverBase  {
     public boolean visited(int i) {
         return visited[i] == visitedToken;
     }
+
     //change visitedToken
     public void markAllNodesUnvisited() {
         visitedToken++;
     }
 
-    public List<Edge>[] getGraph(){
+    public List<Edge>[] getGraph() {
         execute();
         return graph;
     }
 
-    public List<Edge> getEdges(){
+    public List<Edge> getEdges() {
         return edges;
     }
+
     //return the maxflow from the source to the sink.
     public long getMaxFlow() {
         execute();
         return maxFlow;
     }
+
     //only applies to min-cost max-flow algorithms.
     public long getMinCost() {
         execute();
@@ -167,47 +122,91 @@ public abstract class NetworkFlowSolverBase  {
         return minCut;
     }
 
+    public int getSource() {
+        return s;
+    }
+
     public void setSource(int s) {
         this.s = s;
+    }
+
+    public int getSink() {
+        return t;
     }
 
     public void setSink(int t) {
         this.t = t;
     }
-    public int getSource() {
-        return s;
-    }
-    public int getSink() {
-        return t;
-    }
+
     //Set 'solved' flag to false to force recomputation of subsequent flows.
     public void recompute() {
         solved = false;
     }
+
     //print all edges.
     public Intent printEdges() {
         Intent intent = new Intent();
         ArrayList<String> giver = new ArrayList<>();
         ArrayList<String> taker = new ArrayList<>();
         ArrayList<String> money = new ArrayList<>();
-        for(Edge edge : edges) {
+        for (Edge edge : edges) {
             System.out.println(String.format("%s ----%s----> %s", vertexLabels[edge.from], edge.capacity, vertexLabels[edge.to]));
             giver.add(vertexLabels[edge.from]);
             money.add(Long.toString(edge.capacity));
             taker.add(vertexLabels[edge.to]);
         }
-        intent.putStringArrayListExtra("giver",giver);
-        intent.putStringArrayListExtra("money",money);
-        intent.putStringArrayListExtra("taker",taker);
-       return intent;
+        intent.putStringArrayListExtra("giver", giver);
+        intent.putStringArrayListExtra("money", money);
+        intent.putStringArrayListExtra("taker", taker);
+        return intent;
     }
+
     //Wrapper method that ensures we only  call solve() once
     private void execute() {
-        if(solved) return;
+        if (solved) return;
         solved = true;
         solve();
     }
 
     public abstract void solve();
+
+    public static class Edge {
+        public final long capacity, originalCost;
+        public int from, to;
+        public String fromLabel, toLabel;
+        public Edge residual;
+        public long flow, cost;
+
+        public Edge(int from, int to, long capacity) {
+            this(from, to, capacity, 0);
+        }
+
+        public Edge(int from, int to, long capacity, long cost) {
+            this.from = from;
+            this.to = to;
+            this.capacity = capacity;
+            originalCost = this.cost = cost;
+        }
+
+        public boolean isResidual() {
+            return capacity == 0;
+        }
+
+        public long remainingCapacity() {
+            return capacity - flow;
+        }
+
+        public void augment(long bottleNeck) {
+            flow += bottleNeck;
+            residual.flow -= bottleNeck;
+        }
+
+        public String toString(int s, int t) {
+            String u = (from == s) ? "s" : ((from == t) ? "t" : String.valueOf(from));
+            String v = (to == s) ? "s" : ((to == t) ? "t" : String.valueOf(to));
+            return String.format("Edge %s -> %s | flow = %d | capacity = %d | is residual: %s", u, v, flow,
+                    isResidual());
+        }
+    }
 }
 
